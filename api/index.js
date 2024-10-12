@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import UserRoutes from "./routes/user.routes.js";
+import AuthRoutes from "./routes/auth.routes.js";
 
 dotenv.config();
 
@@ -17,6 +18,9 @@ mongoose
 
 const app = express();
 
+// convert coming to express from json
+app.use(express.json());
+
 // liste to the port
 app.listen(3077, () => {
   console.log("Server is Running in Port:3077");
@@ -24,3 +28,6 @@ app.listen(3077, () => {
 
 // Adding the routes to call api - Test
 app.use("/api/user", UserRoutes);
+
+// Adding Auth routes and store user auth data in db
+app.use("/api/auth", AuthRoutes);
