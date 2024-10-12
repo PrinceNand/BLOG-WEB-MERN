@@ -1,10 +1,11 @@
 import { Button, Navbar, TextInput } from "flowbite-react";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon } from "react-icons/fa";
 
 function Header() {
+  const path = useLocation().pathname;
   return (
     <Navbar className="border-b-2">
       <Link
@@ -44,7 +45,23 @@ function Header() {
             Sign In
           </Button>
         </Link>
+
+        {/* Linking Navbar for humburger*/}
+        <Navbar.Toggle />
       </div>
+
+      {/* Menus */}
+      <Navbar.Collapse>
+        <Navbar.Link active={path === "/"} as={"div"}>
+          <Link to="/">Home</Link>
+        </Navbar.Link>
+        <Navbar.Link active={path === "/about-us"} as={"div"}>
+          <Link to="/about-us">About</Link>
+        </Navbar.Link>
+        <Navbar.Link active={path === "/projects"} as={"div"}>
+          <Link to="/projects">Projects</Link>
+        </Navbar.Link>
+      </Navbar.Collapse>
     </Navbar>
   );
 }
