@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
-    userName: {
+    username: {
       type: String,
       required: true,
       unique: true,
@@ -20,6 +20,7 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// it create the table and automatically add 's' after user ex:users
 const User = mongoose.model("User", userSchema);
 
 export default User;
