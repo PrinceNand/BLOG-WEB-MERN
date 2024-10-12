@@ -31,3 +31,14 @@ app.use("/api/user", UserRoutes);
 
 // Adding Auth routes and store user auth data in db
 app.use("/api/auth", AuthRoutes);
+
+// Middleware to handle all function and error
+app.use((err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
+  const message = err.message || "Internal Server Error";
+  res.status(statusCode).json({
+    success: false,
+    statusCode,
+    message,
+  });
+});
