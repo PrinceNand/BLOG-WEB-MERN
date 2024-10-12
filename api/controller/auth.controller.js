@@ -1,4 +1,5 @@
 import User from "../model/user.model.js";
+import bycrptjs from "bcryptjs";
 
 export const signup = async (req, res) => {
   // get data from json post req
@@ -15,8 +16,10 @@ export const signup = async (req, res) => {
     return res.status(400).json({ message: "All feilds are required!" });
   }
 
+  const hashedPassword = bycrptjs.hashSync(password, 10);
+
   // convert data to models
-  const newUser = new User({ username, email, password });
+  const newUser = new User({ username, email, password: hashedPassword });
 
   // save data in db
   //   await newUser.save();
