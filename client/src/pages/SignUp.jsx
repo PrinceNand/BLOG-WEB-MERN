@@ -1,12 +1,14 @@
-import { Button, Label, TextInput } from "flowbite-react";
+import { Alert, Button, Label, TextInput } from "flowbite-react";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function SignUp() {
+  const [errorMessage, setErrorMessage] = useState(null);
+
   const [formData, setFormData] = useState({});
   // get data from form and store in the variable
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
+    setFormData({ ...formData, [e.target.id]: e.target.value.trim() }); //.trim() to remove space
   };
 
   // track the entered values
@@ -16,7 +18,15 @@ export default function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault(); // handle refresh
 
+    // check the feilds are empty
+    if (!formData.username || !formData.email || !formData.password) {
+      return setErrorMessage("Please fill out all fields.");
+    }
+
     try {
+      // clear all errors
+      setErrorMessage(null);
+
       // get the api routes and create api call structure with json data
       const res = await fetch("/api/auth/signup", {
         method: "POST",
@@ -25,8 +35,15 @@ export default function SignUp() {
       });
 
       // send data
-      const data = await res.json;
-    } catch (e) {}
+      const data = await res.json();
+
+      // show error if data is not successfull
+      if (data.success === false) {
+        return setErrorMessage(data.message);
+      }
+    } catch (e) {
+      setErrorMessage(e.message);
+    }
   };
 
   return (
@@ -90,6 +107,13 @@ export default function SignUp() {
               Sign In
             </Link>
           </div>
+
+          {/* error message is not null show to user */}
+          {errorMessage && (
+            <Alert className="mt-5" color="failure">
+              {errorMessage}
+            </Alert>
+          )}
         </div>
       </div>
     </div>
