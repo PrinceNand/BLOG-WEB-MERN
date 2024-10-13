@@ -1,8 +1,34 @@
 import { Button, Label, TextInput } from "flowbite-react";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function SignUp() {
+  const [formData, setFormData] = useState({});
+  // get data from form and store in the variable
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  // track the entered values
+  // console.log(formData);
+
+  // store the data in db
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // handle refresh
+
+    try {
+      // get the api routes and create api call structure with json data
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      // send data
+      const data = await res.json;
+    } catch (e) {}
+  };
+
   return (
     <div className="min-h-screen mt-20">
       <div className="flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center gap-5">
@@ -22,10 +48,15 @@ export default function SignUp() {
 
         {/* Right area */}
         <div className="flex-1">
-          <form className="flex flex-col gap-4">
+          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             <div>
               <Label value="Your Username" />
-              <TextInput type="text" placeholder="Username" id="username" />
+              <TextInput
+                type="text"
+                placeholder="Username"
+                id="username"
+                onChange={handleChange}
+              />
             </div>
             <div>
               <Label value="Your Email" />
@@ -33,11 +64,17 @@ export default function SignUp() {
                 type="email"
                 placeholder="name@company.com"
                 id="email"
+                onChange={handleChange}
               />
             </div>
             <div>
               <Label value="Your Password" />
-              <TextInput type="password" placeholder="Password" id="password" />
+              <TextInput
+                type="password"
+                placeholder="Password"
+                id="password"
+                onChange={handleChange}
+              />
             </div>
 
             {/* Add Sign Up Button */}
