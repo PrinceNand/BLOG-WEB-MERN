@@ -1,11 +1,21 @@
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../redux/user/userSlice";
 
 export default function SignIn() {
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [loading, setLoading] = useState(false);
+  // const [errorMessage, setErrorMessage] = useState(null);
+  // const [loading, setLoading] = useState(false);
+  // set errorMessage and loading using redux selector
+  const { loading, error: errorMessage } = useSelector((state) => state.user);
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({});
   // get data from form and store in the variable
@@ -22,13 +32,15 @@ export default function SignIn() {
 
     // check the feilds are empty
     if (!formData.email || !formData.password) {
-      return setErrorMessage("Please fill out all fields.");
+      // return setErrorMessage("Please fill out all fields.");
+      return dispatch(signInFailure("Please fill out all fields."));
     }
 
     try {
       // clear all errors and set loading true
-      setErrorMessage(null);
-      setLoading(true);
+      // setErrorMessage(null);
+      // setLoading(true);
+      dispatch(signInStart());
 
       // get the api routes and create api call structure with json data
       const res = await fetch("/api/auth/signin", {
@@ -42,19 +54,22 @@ export default function SignIn() {
 
       // show error if data is not successfull
       if (data.success === false) {
-        setLoading(false);
-        return setErrorMessage(data.message);
+        // setLoading(false);
+        // return setErrorMessage(data.message);
+        dispatch(signInFailure(data.message));
       }
 
-      setLoading(false);
+      // setLoading(false);
 
       // on success move to another page
       if (res.ok) {
+        dispatch(signInSuccess());
         navigate("/");
       }
     } catch (e) {
-      setErrorMessage(e.message);
-      setLoading(false);
+      // setErrorMessage(e.message);
+      // setLoading(false);
+      dispatch(signInFailure(e.message));
     }
   };
 
