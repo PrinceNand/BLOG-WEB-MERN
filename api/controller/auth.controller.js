@@ -56,13 +56,13 @@ export const signin = async (req, res, next) => {
     const validUser = await User.findOne({ email });
 
     if (!validUser) {
-      next(404, "User Not Found!");
+      next(errorHandler(404, "User Not Found!"));
     }
 
     // check if password is matching with user
     const validPassword = bycrptjs.compareSync(password, validUser.password);
     if (!validPassword) {
-      return next(400, "Invalid Credentials!");
+      return next(errorHandler(400, "Invalid Credentials!"));
     }
 
     // using jwt to get convert the authentication to token
