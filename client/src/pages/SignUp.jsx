@@ -1,9 +1,11 @@
-import { Alert, Button, Label, TextInput } from "flowbite-react";
+import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function SignUp() {
   const [errorMessage, setErrorMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({});
   // get data from form and store in the variable
@@ -24,8 +26,9 @@ export default function SignUp() {
     }
 
     try {
-      // clear all errors
+      // clear all errors and set loading true
       setErrorMessage(null);
+      setLoading(true);
 
       // get the api routes and create api call structure with json data
       const res = await fetch("/api/auth/signup", {
@@ -39,10 +42,19 @@ export default function SignUp() {
 
       // show error if data is not successfull
       if (data.success === false) {
+        setLoading(false);
         return setErrorMessage(data.message);
+      }
+
+      setLoading(false);
+
+      // on success move to another page
+      if (res.ok) {
+        navigate("/sign-in");
       }
     } catch (e) {
       setErrorMessage(e.message);
+      setLoading(false);
     }
   };
 
@@ -95,8 +107,20 @@ export default function SignUp() {
             </div>
 
             {/* Add Sign Up Button */}
-            <Button gradientDuoTone="purpleToPink" type="submit">
-              Sign Up
+            <Button
+              gradientDuoTone="purpleToPink"
+              type="submit"
+              disabled={loading}
+            >
+              {/* Add loading in button or Sign Up */}
+              {loading ? (
+                <>
+                  <Spinner size="sm" />
+                  <span className="pl-3">Loading...</span>
+                </>
+              ) : (
+                "Sign Up"
+              )}
             </Button>
           </form>
 
