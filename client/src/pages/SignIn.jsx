@@ -7,6 +7,7 @@ import {
   signInSuccess,
   signInFailure,
 } from "../redux/user/userSlice";
+import OAuth from "../components/OAuth";
 
 export default function SignIn() {
   // const [errorMessage, setErrorMessage] = useState(null);
@@ -128,6 +129,9 @@ export default function SignIn() {
                 "Sign In"
               )}
             </Button>
+
+            {/* Adding Google Auth */}
+            <OAuth />
           </form>
 
           {/* Add a link to Sign In user */}

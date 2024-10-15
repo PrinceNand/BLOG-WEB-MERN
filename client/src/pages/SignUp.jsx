@@ -1,6 +1,7 @@
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import OAuth from "../components/OAuth";
 
 export default function SignUp() {
   const [errorMessage, setErrorMessage] = useState(null);
@@ -105,7 +106,6 @@ export default function SignUp() {
                 onChange={handleChange}
               />
             </div>
-
             {/* Add Sign Up Button */}
             <Button
               gradientDuoTone="purpleToPink"
@@ -122,6 +122,8 @@ export default function SignUp() {
                 "Sign Up"
               )}
             </Button>
+            {/* Adding Google Auth */}
+            <OAuth />
           </form>
 
           {/* Add a link to Sign In user */}
