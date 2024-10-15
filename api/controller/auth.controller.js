@@ -67,6 +67,8 @@ export const signin = async (req, res, next) => {
 
     // using jwt to get convert the authentication to token
     // validUser._id: to get the unique id created in db for user | JWT_SECRET: to hide the token
+    // It's taking the user's unique ID (validUser._id) and turning it into a token.
+    // The token is signed with a secret key (process.env.JWT_SECRET) to ensure it's secure.
     const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
 
     // hide the password so that it should not get send to user
@@ -77,5 +79,59 @@ export const signin = async (req, res, next) => {
       .json(rest);
   } catch (e) {
     next(e);
+  }
+};
+
+export const googleAuth = async (req, res, next) => {
+  const { email, name, googlePhotoUrl } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (user) {
+      // Existing User
+      // It's taking the user's unique ID (validUser._id) and turning it into a token.
+      // The token is signed with a secret key (process.env.JWT_SECRET) to ensure it's secure.
+      const token = just.sign({ id: user._id }, process.env.JWT_SECRET);
+
+      const { password, ...rest } = user._doc;
+
+      res
+        .status(200)
+        .cookie("access-token", token, {
+          httpOnly: true,
+        })
+        .json(rest);
+    } else {
+      // New User
+      const generatedPassword =
+        Math.random().toString(36).slice(-8) +
+        Math.random().toString(36).slice(-8);
+
+      const hashedPassword = bycrptjs.hashSync(generatedPassword, 10);
+
+      const newUser = new User({
+        username:
+          name.toLowerCase().split(" ").join("") +
+          Math.random().toString(9).slice(-4),
+        email,
+        password: hashedPassword,
+        profilePicture: googlePhotoUrl,
+      });
+      await newUser.save();
+      const token = jwt.sign(
+        { id: newUser._id, isAdmin: newUser.isAdmin },
+        process.env.JWT_SECRET
+      );
+      const { password, ...rest } = newUser._doc;
+      res
+        .status(200)
+        .cookie("access_token", token, {
+          httpOnly: true,
+        })
+        .json(rest);
+    }
+  } catch (error) {
+    next(error);
   }
 };
