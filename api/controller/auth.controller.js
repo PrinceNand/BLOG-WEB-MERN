@@ -92,7 +92,7 @@ export const googleAuth = async (req, res, next) => {
       // Existing User
       // It's taking the user's unique ID (validUser._id) and turning it into a token.
       // The token is signed with a secret key (process.env.JWT_SECRET) to ensure it's secure.
-      const token = just.sign({ id: user._id }, process.env.JWT_SECRET);
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
 
       const { password, ...rest } = user._doc;
 
