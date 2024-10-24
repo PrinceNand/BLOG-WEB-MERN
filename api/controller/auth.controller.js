@@ -2,6 +2,7 @@ import User from "../model/user.model.js";
 import bycrptjs from "bcryptjs";
 import { errorHandler } from "../utils/error.js";
 import jwt from "jsonwebtoken";
+import { json } from "express";
 
 // Auth Routes for Sign Up
 export const signup = async (req, res, next) => {
@@ -69,8 +70,10 @@ export const signin = async (req, res, next) => {
     // validUser._id: to get the unique id created in db for user | JWT_SECRET: to hide the token
     // It's taking the user's unique ID (validUser._id) and turning it into a token.
     // The token is signed with a secret key (process.env.JWT_SECRET) to ensure it's secure.
-    const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
-
+    const token = jwt.sign(
+      { id: validUser._id, isAdmin: validUser.isAdmin },
+      process.env.JWT_SECRET
+    );
     // hide the password so that it should not get send to user
     const { password: pass, ...rest } = validUser._doc;
     res
@@ -92,7 +95,10 @@ export const googleAuth = async (req, res, next) => {
       // Existing User
       // It's taking the user's unique ID (validUser._id) and turning it into a token.
       // The token is signed with a secret key (process.env.JWT_SECRET) to ensure it's secure.
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+      const token = jwt.sign(
+        { id: user._id, isAdmin: user.isAdmin },
+        process.env.JWT_SECRET
+      );
 
       const { password, ...rest } = user._doc;
 
@@ -120,6 +126,7 @@ export const googleAuth = async (req, res, next) => {
       });
       await newUser.save();
       const token = jwt.sign(
+        // added here before itself
         { id: newUser._id, isAdmin: newUser.isAdmin },
         process.env.JWT_SECRET
       );
