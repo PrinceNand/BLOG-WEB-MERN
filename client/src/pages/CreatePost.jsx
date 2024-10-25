@@ -160,9 +160,7 @@ export default function CreatePost() {
           placeholder="Write something..."
           className="h-72 mb-12"
           required
-          onChange={(value) => {
-            setFormData({ ...formData, content: value });
-          }}
+          onChange={(content) => setFormData((prev) => ({ ...prev, content }))}
         />
         <Button type="submit" gradientDuoTone="purpleToPink">
           Publish
