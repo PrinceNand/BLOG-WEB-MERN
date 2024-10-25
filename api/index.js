@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import UserRoutes from "./routes/user.routes.js";
 import AuthRoutes from "./routes/auth.routes.js";
+import PostRoutes from "./routes/post.routes.js";
 import cookieParser from "cookie-parser";
 
 dotenv.config();
@@ -33,6 +34,9 @@ app.use("/api/user", UserRoutes);
 
 // Adding Auth routes and store user auth data in db
 app.use("/api/auth", AuthRoutes);
+
+// Add Post router to handle post related api
+app.use("/api/user", PostRoutes);
 
 // Middleware to handle all function and error
 app.use((err, req, res, next) => {
