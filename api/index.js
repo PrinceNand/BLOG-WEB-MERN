@@ -36,7 +36,7 @@ app.use("/api/user", UserRoutes);
 app.use("/api/auth", AuthRoutes);
 
 // Add Post router to handle post related api
-app.use("/api/user", PostRoutes);
+app.use("/api/post", PostRoutes);
 
 // Middleware to handle all function and error
 app.use((err, req, res, next) => {
