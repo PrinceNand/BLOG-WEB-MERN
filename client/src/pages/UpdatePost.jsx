@@ -1,5 +1,5 @@
 import { Alert, Button, FileInput, Select, TextInput } from "flowbite-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import {
@@ -28,6 +28,28 @@ export default function UpdatePost() {
   const { postId } = useParams();
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    try {
+      const fetchPost = async () => {
+        const res = await fetch(`/api/post/getposts?postId=${postId}`);
+        const data = await res.json();
+        if (!res.ok) {
+          console.log(data.message);
+          setPublishError(data.message);
+          return;
+        }
+        if (res.ok) {
+          setPublishError(null);
+          setFormData(data.posts[0]);
+        }
+      };
+
+      fetchPost();
+    } catch (error) {
+      console.log(error.message);
+    }
+  }, [postId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -101,6 +123,7 @@ export default function UpdatePost() {
           <TextInput
             type="text"
             placeholder="Title"
+            value={formData.title}
             required
             id="title"
             className="flex-1"
@@ -110,6 +133,7 @@ export default function UpdatePost() {
             }
           />
           <Select
+            value={formData.category}
             onChange={(e) =>
               //   setting to form data
               setFormData({ ...formData, category: e.target.value })
@@ -159,6 +183,7 @@ export default function UpdatePost() {
 
         <ReactQuill
           theme="snow"
+          value={formData.content}
           placeholder="Write something..."
           className="h-72 mb-12"
           required
