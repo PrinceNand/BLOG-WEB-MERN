@@ -6,6 +6,7 @@ import AuthRoutes from "./routes/auth.routes.js";
 import PostRoutes from "./routes/post.routes.js";
 import CommentRoutes from "./routes/comment.route.js";
 import cookieParser from "cookie-parser";
+import path from "path";
 
 dotenv.config();
 
@@ -18,6 +19,8 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
+
+const __dirname = path.resolve();
 
 const app = express();
 
@@ -41,6 +44,12 @@ app.use("/api/post", PostRoutes);
 
 // Add Comment router to handle comment related api
 app.use("/api/comment", CommentRoutes);
+
+// connect all files / routes location in the server
+app.use(express.static(path.join(__dirname, "/client/dist")));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+});
 
 // Middleware to handle all function and error
 app.use((err, req, res, next) => {
